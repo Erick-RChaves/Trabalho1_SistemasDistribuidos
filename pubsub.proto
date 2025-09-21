@@ -3,12 +3,16 @@ syntax = "proto3";
 package pubsub;
 
 message Message {
+ string topic = 1;
+  string content = 2;
 }
 
 message SubscribeRequest {
+  string topic = 1;
 }
 
 message Ack {
+string status = 1;
 }
 
 service PubSub {
