@@ -1,5 +1,3 @@
-Protocol Buffers
-
 syntax = "proto3";
 package ecommerce;
 // Serviço de Encomendas
@@ -29,3 +27,4 @@ message PaymentResponse {
 bool success = 1;
 string transaction_id = 2;
 }
+
