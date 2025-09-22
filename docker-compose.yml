@@ -1,0 +1,45 @@
+version: '3.8'   # Versão do docker-compose
+
+services:
+  rabbitmq:      # Serviço de mensageria para eventos assíncronos
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Porta de comunicação interna
+      - "15672:15672"   # Dashboard web do RabbitMQ
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  payment_service:       # Serviço de Pagamentos (gRPC síncrono)
+    build: ./payment_service
+    container_name: payment_service
+    ports:
+      - "50052:50052"
+    volumes:
+      - ./protos:/app/protos
+
+  order_service:         # Serviço de Pedidos
+    build: ./order_service
+    container_name: order_service
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./protos:/app/protos
+    depends_on:
+      - rabbitmq
+      - payment_service
+
+  notification_service:  # Serviço que consome eventos assíncronos
+    build: ./notification_service
+    container_name: notification_service
+    volumes:
+      - ./protos:/app/protos
+    depends_on:
+      - rabbitmq
+
+volumes:                 # Volume persistente para o RabbitMQ
+  rabbitmq_data:
+    driver: local
