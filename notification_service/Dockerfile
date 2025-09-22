@@ -1,10 +1,11 @@
-FROM python:3.9-slim   # Imagem base do Python leve
-
-WORKDIR /app           # Define diretório de trabalho dentro do container
-
-COPY requirements.txt .           # Copia as dependências
+# Dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .                          # Copia o código fonte para o container
-
+COPY . .
+# Comando será especificado no docker-compose.yml, mas expomos as portas
+# EXPOSE 50051
+# EXPOSE 50052
 # Portas expostas são definidas no docker-compose, não aqui
+
